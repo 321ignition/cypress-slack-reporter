@@ -19,7 +19,9 @@ let {
   CI_PROJECT_REPONAME,
   CI_PROJECT_USERNAME,
   CI_URL,
-  CI_CIRCLE_JOB
+  CI_CIRCLE_JOB,
+  CI_RUN_ID,
+  CI_REPOSITORY
 } = process.env;
 const { CIRCLE_PROJECT_ID } = process.env;
 const ENV_SUT = process.env.ENV_SUT;
@@ -133,7 +135,7 @@ export function webhookInitialArgs(
     triggerText = "";
   } else {
     if (!CI_USERNAME) {
-      triggerText = `This run was triggered by <${commitUrl}|commit>`;
+      triggerText = `The run for ${CI_PROJECT_REPONAME} has finished <${commitUrl}|link>`;
     } else {
       triggerText = `This run was triggered by <${commitUrl}|${CI_USERNAME}>`;
     }
@@ -407,10 +409,12 @@ export function buildHTMLReportURL(_reportDir: string, _artefactUrl: string) {
 export function getArtefactUrl(_vcsRoot: string, _artefactUrl: string) {
   switch (_vcsRoot) {
     case "github":
-      _artefactUrl = `https://${CI_BUILD_NUM}-${CIRCLE_PROJECT_ID}-gh.circle-artifacts.com/0/`;
+      VCS_BASEURL = "https://github.com";
+      _artefactUrl = `${VCS_BASEURL}/${CI_REPOSITORY}/actions/runs/${CI_RUN_ID}`;
       break;
     case "bitbucket":
-      _artefactUrl = `https://${CI_BUILD_NUM}-${CIRCLE_PROJECT_ID}-bb.circle-artifacts.com/0/`;
+      VCS_BASEURL = "https://bitbucket.org";
+      _artefactUrl = `${VCS_BASEURL}/${CI_REPOSITORY}/actions/runs/${CI_RUN_ID}`;
       break;
     default: {
       _artefactUrl = "";
@@ -422,10 +426,10 @@ export function getArtefactUrl(_vcsRoot: string, _artefactUrl: string) {
 export function getCommitUrl(_vcsRoot: string) {
   if (_vcsRoot === "github") {
     VCS_BASEURL = "https://github.com";
-    return (commitUrl = `${VCS_BASEURL}/${CI_PROJECT_USERNAME}/${CI_PROJECT_REPONAME}/commit/${CI_SHA1}`);
+    return (commitUrl = `${VCS_BASEURL}/${CI_REPOSITORY}/actions/runs/${CI_RUN_ID}`);
   } else if (_vcsRoot === "bitbucket") {
     VCS_BASEURL = "https://bitbucket.org";
-    return (commitUrl = `${VCS_BASEURL}/${CI_PROJECT_USERNAME}/${CI_PROJECT_REPONAME}/commits/${CI_SHA1}`);
+    return (commitUrl = `${VCS_BASEURL}/${CI_REPOSITORY}/actions/runs/${CI_RUN_ID}`);
   } else {
     return (commitUrl = "");
   }

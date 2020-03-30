@@ -12,10 +12,12 @@ A Slack Reporting tool built for Cypress but _should_ work with any mocha based 
 <!-- [![CircleCI](https://circleci.com/gh/YOU54F/cypressio-slack-reporter.svg?style=svg)](https://circleci.com/gh/YOU54F/cypressio-slack-reporter)
 [![Sonarcloud Status](https://sonarcloud.io/api/project_badges/measure?project=YOU54F_cypressio-slack-reporter&metric=alert_status)](https://sonarcloud.io/dashboard?id=YOU54F_cypressio-slack-reporter) -->
 
-- Slack reporter with integration with CircleCI
-  - Reports Github/BitBucket Triggering Commit Details
-  - Reports CirleCI Build Logs / Status / Artefacts
-  - Reports Test Status & Provides Report Links
+Forked from [YOU54F/cypress-slack-reporter](https://github.com/YOU54F/cypress-slack-reporter), porting for Github acitons
+
+- Slack reporter with integration with Github actions
+  - Reports Repo triggering the event
+  - Reports GithubAcition Build Logs / Status / Artefacts
+  - Reports Test Status and link to runs
 - Takes the output of Mochawesome JSON output to determine test result & corresponding slack message
 - Provides a URL link to the Test Artefacts (Mochawesome HTML Test Report / Cypress Video & Screenshots)
 - Programatically run Cypress via a script file with full report generation and Slack Reporting.
@@ -34,7 +36,7 @@ It provides the following distinct message types
 
 It provides the following information
 
-- CircleCI Build Status
+- Github Actions Build Status
 - Test Stats (Total Tests / Passes / Failures)
 - Author with link to Github commit
 - Branch name
@@ -42,7 +44,7 @@ It provides the following information
 
 And the following build/test artefacts
 
-- CircleCI Build Log button
+- Github Action Build Log button
 - HTML Test report button (only on build success)
 - Videos of test runs (one link per test)
 - Screenshots of failed tests (one link per failing test)
@@ -56,12 +58,7 @@ And the following build/test artefacts
 Note _Please see the pre-requisites folder to current neccessary pre-requisites_
 
 1. Install the app
-
-    $ yarn add cypress-slack-reporter --dev
-
-    or
-
-    $ npm install cypress-slack-reporter --save-dev
+   Install as dependency in your package.json
 
 2. Create a Slack app & create an incoming webhook
 
@@ -71,7 +68,7 @@ Set the following environment variables in your localhost or CI configuration.
 
 - `$SLACK_WEBHOOK_URL` - The full URL you created in the last step
 
-    $ export SLACK_WEBHOOK_URL=yourWebhookUrlHere
+  \$ export SLACK_WEBHOOK_URL=yourWebhookUrlHere
 
 ## Execution
 
@@ -99,7 +96,7 @@ Set the following environment variables in your localhost or CI configuration.
 
 Yarn installation Instructions
 
-``` sh
+```sh
     yarn add mochawesome --dev
     yarn add mochawesome-merge --dev
     yarn add mochawesome-report-generator --dev
@@ -108,7 +105,7 @@ Yarn installation Instructions
 
 NPM installation Instructions
 
-``` sh
+```sh
     npm install mochawesome --save-dev
     npm install mochawesome-merge --save-dev
     npm install mochawesome-report-generator --save-dev
@@ -146,10 +143,6 @@ reporterOpts.json
 ```
 
 ## CircleCI
-
-This project is building in CircleCI and can be viewed at the following link
-
-[CircleCI Build](https://circleci.com/gh/YOU54F/cypress-slack-reporter)
 
 See the `.circleci` folder
 
@@ -241,7 +234,7 @@ rm -rf ./cypress/reports/mocha && npx ts-node script.ts
 // tslint:disable-next-line: no-reference
 /// <reference path='./node_modules/cypress/types/cypress-npm-api.d.ts'/>
 import * as CypressNpmApi from "cypress";
-import {slackRunner}from "cypress-slack-reporter/bin/slack/slack-alert";
+import { slackRunner } from "cypress-slack-reporter/bin/slack/slack-alert";
 // tslint:disable: no-var-requires
 const marge = require("mochawesome-report-generator");
 const { merge } = require("mochawesome-merge");
@@ -265,14 +258,16 @@ CypressNpmApi.run({
   }
 })
   .then(async results => {
-    const generatedReport =  await Promise.resolve(generateReport({
-      reportDir: "cypress/reports/mocha",
-      inline: true,
-      saveJson: true,
-    }))
+    const generatedReport = await Promise.resolve(
+      generateReport({
+        reportDir: "cypress/reports/mocha",
+        inline: true,
+        saveJson: true
+      })
+    );
     // tslint:disable-next-line: no-console
-    console.log("Merged report available here:-",generatedReport);
-    return generatedReport
+    console.log("Merged report available here:-", generatedReport);
+    return generatedReport;
   })
   .then(generatedReport => {
     const program: any = {
@@ -306,9 +301,8 @@ CypressNpmApi.run({
       screenshotDirectory,
       verbose
     );
-     // tslint:disable-next-line: no-console
-     console.log("Finished slack upload")
-
+    // tslint:disable-next-line: no-console
+    console.log("Finished slack upload");
   })
   .catch((err: any) => {
     // tslint:disable-next-line: no-console
@@ -316,9 +310,7 @@ CypressNpmApi.run({
   });
 
 function generateReport(options: any) {
-  return merge(options).then((report: any) =>
-    marge.create(report, options)
-  );
+  return merge(options).then((report: any) => marge.create(report, options));
 }
 ```
 
@@ -326,20 +318,20 @@ function generateReport(options: any) {
 
 - [ ] provide user ability to provide own CI artefact paths
 - [ ] typescript s3 uploader scripts and add to CLI
-  - [X] tsified
-  - [X] able to run in isolation
-  - [X] mock aws-sdk s3 upload function
-  - [X] tests
-  - [X] retrieve s3 links for test report/artefacts and inject into the slack report
-  - [X] uploading artefacts to s3
+  - [x] tsified
+  - [x] able to run in isolation
+  - [x] mock aws-sdk s3 upload function
+  - [x] tests
+  - [x] retrieve s3 links for test report/artefacts and inject into the slack report
+  - [x] uploading artefacts to s3
   - [ ] add to CLI
   - [ ] programatically run
   - [ ] Add into main slack-reporter script
   - [ ] provide CLI options to provide paths/credentials
-- [X] Programatically run
-  - [X] provide ability to be programatically run via a script
-  - [X] provide example
-  - [X] add usage instructions to readme
-  - [X] test example
-  - [X] compile
-- [X] Migrate Slack mock to seperate module available at [npm - slack-mock-typed](https://www.npmjs.com/package/slack-mock-typed)
+- [x] Programatically run
+  - [x] provide ability to be programatically run via a script
+  - [x] provide example
+  - [x] add usage instructions to readme
+  - [x] test example
+  - [x] compile
+- [x] Migrate Slack mock to seperate module available at [npm - slack-mock-typed](https://www.npmjs.com/package/slack-mock-typed)
