@@ -135,7 +135,7 @@ export function webhookInitialArgs(
     triggerText = "";
   } else {
     if (!CI_USERNAME) {
-      triggerText = `The run for ${CI_PROJECT_REPONAME} has finished <${commitUrl}|link>`;
+      triggerText = `The run for ${CI_REPOSITORY} has finished <${commitUrl}|link>`;
     } else {
       triggerText = `This run was triggered by <${commitUrl}|${CI_USERNAME}>`;
     }
@@ -153,7 +153,7 @@ export function webhookInitialArgs(
     projectName = `${CI_PROJECT_REPONAME}`;
   }
   return (initialArgs = {
-    text: `${projectName} ${statusText}\n${triggerText}${prText}`
+    text: "" //`${projectName} ${statusText}\n${triggerText}${prText}`
   });
 }
 
@@ -371,7 +371,7 @@ export function getVideoLinks(_artefactUrl: string, _videosDir: string) {
     } else {
       videos.forEach(videoObject => {
         const trimmedVideoFilename = path.basename(videoObject);
-        videoAttachmentsSlack = `<${videosURL}${videoObject}|Video:- ${trimmedVideoFilename}>\n${videoAttachmentsSlack}`;
+        videoAttachmentsSlack = `<${videosURL}|Video:- ${trimmedVideoFilename}>\n${videoAttachmentsSlack}`;
       });
     }
   }
@@ -393,7 +393,7 @@ export function getScreenshotLinks(
     } else {
       screenshots.forEach(screenshotObject => {
         const trimmedScreenshotFilename = path.basename(screenshotObject);
-        return (screenshotAttachmentsSlack = `<${screenshotURL}${screenshotObject}|Screenshot:- ${trimmedScreenshotFilename}>\n${screenshotAttachmentsSlack}`);
+        return (screenshotAttachmentsSlack = `<${screenshotURL}|Screenshot:- ${trimmedScreenshotFilename}>\n${screenshotAttachmentsSlack}`);
       });
     }
   }
@@ -402,7 +402,7 @@ export function getScreenshotLinks(
 
 export function buildHTMLReportURL(_reportDir: string, _artefactUrl: string) {
   reportHTMLFilename = getHTMLReportFilename(_reportDir);
-  reportHTMLUrl = _artefactUrl + _reportDir + "/" + reportHTMLFilename;
+  reportHTMLUrl = _artefactUrl; // + _reportDir + "/" + reportHTMLFilename;
   return reportHTMLUrl;
 }
 
