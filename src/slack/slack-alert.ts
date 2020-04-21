@@ -131,15 +131,15 @@ export function webhookInitialArgs(
     }
   }
   let triggerText: string;
-  if (!commitUrl) {
-    triggerText = "";
-  } else {
+  // if (!commitUrl) {
+  //   triggerText = "";
+  // } else {
     if (!CI_USERNAME) {
       triggerText = `The run for ${CI_REPOSITORY} has finished <${commitUrl}|link>`;
     } else {
       triggerText = `This run was triggered by <${commitUrl}|${CI_USERNAME}>`;
     }
-  }
+  // }
   let prText: string;
   if (!prLink) {
     prText = "";
