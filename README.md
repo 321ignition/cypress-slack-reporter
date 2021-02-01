@@ -12,7 +12,7 @@ A Slack Reporting tool built for Cypress but _should_ work with any mocha based 
 <!-- [![CircleCI](https://circleci.com/gh/YOU54F/cypressio-slack-reporter.svg?style=svg)](https://circleci.com/gh/YOU54F/cypressio-slack-reporter)
 [![Sonarcloud Status](https://sonarcloud.io/api/project_badges/measure?project=YOU54F_cypressio-slack-reporter&metric=alert_status)](https://sonarcloud.io/dashboard?id=YOU54F_cypressio-slack-reporter) -->
 
-Forked from [YOU54F/cypress-slack-reporter](https://github.com/YOU54F/cypress-slack-reporter), porting for Github acitons
+Forked from [YOU54F/cypress-slack-reporter](https://github.com/YOU54F/cypress-slack-reporter), porting for Github actions
 
 - Slack reporter with integration with Github actions
   - Reports Repo triggering the event
